@@ -2,11 +2,22 @@
 
 import { IdeaForm } from "@/components/IdeaForm";
 import { IdeaList } from "@/components/IdeaList";
+import { TaskBreakdown } from "@/components/TaskBreakdown";
 import { useIdeas } from "@/hooks/useIdeas";
+import { useTasks } from "@/hooks/useTasks";
 
 export default function Home() {
   const { ideas, activeIdea, isLoaded, addIdea, deleteIdea, makeActive } =
     useIdeas();
+  const {
+    tasks,
+    isLoaded: areTasksLoaded,
+    addTask,
+    setTaskCompleted,
+  } = useTasks();
+  const activeIdeaTasks = activeIdea
+    ? tasks.filter((task) => task.ideaId === activeIdea.id)
+    : [];
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-10 text-zinc-950 sm:px-6 lg:px-8 dark:bg-black dark:text-zinc-50">
@@ -47,6 +58,13 @@ export default function Home() {
               No active idea selected.
             </p>
           )}
+          <TaskBreakdown
+            activeIdeaId={activeIdea?.id ?? null}
+            tasks={activeIdeaTasks}
+            isLoaded={areTasksLoaded}
+            onAddTask={addTask}
+            onSetTaskCompleted={setTaskCompleted}
+          />
         </section>
 
         <section className="space-y-5" aria-label="Ideas">
